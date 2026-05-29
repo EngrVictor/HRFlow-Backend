@@ -18,7 +18,11 @@ const userSchema = new mongoose.Schema({
     },
     lastLogin: {
         type: Date
-    }
+    },
+    roles: [{ 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Role'
+    }]
 }, {timestamps: true})
 
 const userModel = mongoose.model('User', userSchema);
