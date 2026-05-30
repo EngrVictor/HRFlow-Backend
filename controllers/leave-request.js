@@ -1,13 +1,13 @@
-import employeeModel from "../models/Employee";
+import EmployeeModel from "../models/Employee";
 import LeaveRequest from "../models/LeaveRequest";
 
 // Create a new leave request
 export const createLeaveRequest = async (req, res) => {
     try {
-        const { employeeId, leaveType,  reason, startDate, endDate } = req.body;
+        const { employeeId, leaveType, reason, startDate, endDate } = req.body;
 
         // Validating employee existence
-        const employee = await employeeModel.findById(employeeId);
+        const employee = await EmployeeModel.findById(employeeId);
         if (!employee) {
             return res.status(404).json({ message: 'Employee not found' });
         }
@@ -22,18 +22,14 @@ export const createLeaveRequest = async (req, res) => {
         // Prevent double booking
         const existingLeave = await LeaveRequest.findOne({
             employeeId,
-           status: { $in: ['Pending', 'Approved'] },
-            $or: [
-                {
-                    startDate: { $lte: endDate },
-                    endDate: { $gte: startDate }
-                }
-            ]
+            status: { $in: ['Pending', 'Approved'] },
+            startDate: { $lte: endDate },
+            endDate: { $gte: startDate }
         });
 
         if (existingLeave) {
             return res.status(400).json({
-                message: 'Employee already has approved leave within these dates'
+                message: 'Employee already has an active leave request within these dates'
             });
         }
 
@@ -54,15 +50,59 @@ export const createLeaveRequest = async (req, res) => {
     }
 }
 
-// Get all leave requests with employee details
-export const getLeaveRequests = async (req, res) => {
+// Get leave balance 
+export const getLeaveBalance = async (req, res) => {
     try {
-        const leaveRequests = await LeaveRequest.find().populate('employeeId', 'firstName lastName employeeCode');
+        const { employeeId } = req.params;
+
+        const employee = await EmployeeModel.findById(employeeId);
+
+        if (!employee) {
+            return res.status(404).json({
+                message: 'Employee not found'
+            });
+        }
+
+        return res.status(200).json({
+            leaveBalance: employee.leaveBalance
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            message: 'Error fetching leave balance',
+            error: error.message
+        });
+    }
+};
+
+// Get all leave requests with employee details
+export const getAllLeaveRequests = async (req, res) => {
+    try {
+        const leaveRequests = await LeaveRequest.find()
+        .populate('employeeId', 'firstName lastName employeeCode');
         res.status(200).json(leaveRequests);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching leave requests', error: error.message });
     }
 }
+
+// Get leave requests for a specific employee
+export const getEmployeeLeaveRequests = async (req, res) => {
+    try {
+        const { employeeId } = req.params;
+
+        // Validate employee existence
+        const employee = await EmployeeModel.findById(employeeId);
+        if (!employee) {
+            return res.status(404).json({ message: 'Employee not found' });
+        }
+
+        const leaveRequests = await LeaveRequest.find({ employeeId }).populate('employeeId', 'firstName lastName employeeCode');
+        res.status(200).json(leaveRequests);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching leave requests', error: error.message });
+    }
+};
 
 // Aprove or reject a leave request
 export const updateLeaveRequestStatus = async (req, res) => {
@@ -92,7 +132,7 @@ export const updateLeaveRequestStatus = async (req, res) => {
             });
         }
 
-        
+
         // REJECTION FLOW
         if (status === 'Rejected') {
             leaveRequest.status = 'Rejected';
@@ -109,7 +149,7 @@ export const updateLeaveRequestStatus = async (req, res) => {
         }
 
         // APPROVAL FLOW
-        const employee = await Employee.findById(leaveRequest.employeeId);
+        const employee = await EmployeeModel.findById(leaveRequest.employeeId);
 
         if (!employee) {
             return res.status(404).json({
@@ -165,3 +205,36 @@ export const updateLeaveRequestStatus = async (req, res) => {
         });
     }
 };
+
+// Delete a leave request (only if pending)
+export const deleteLeaveRequest = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const leaveRequest = await LeaveRequest.findById(id);
+
+        if (!leaveRequest) {
+            return res.status(404).json({
+                message: 'Leave request not found'
+            });
+        }
+
+        if (leaveRequest.status !== 'Pending') {
+            return res.status(400).json({
+                message: 'Only pending leave requests can be deleted'
+            });
+        }
+
+        await LeaveRequest.findByIdAndDelete(id);
+
+        return res.status(200).json({
+            message: 'Leave request deleted successfully'
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: 'Error deleting leave request',
+            error: error.message
+        });
+    }
+};
+
