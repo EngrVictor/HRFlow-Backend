@@ -1,13 +1,14 @@
 {
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "mongoose": "^9.6.2"
+    "mongoose": "^9.6.3"
   },
   "name": "hrflow-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "��#\u0000 \u0000H\u0000R\u0000F\u0000l\u0000o\u0000w\u0000-\u0000B\u0000a\u0000c\u0000k\u0000e\u0000n\u0000d\u0000\r\u0000 \u0000",
   "main": "server.js",
   "directories": {
     "test": "tests"
@@ -19,5 +20,13 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module"
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EngrVictor/HRFlow-Backend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/EngrVictor/HRFlow-Backend/issues"
+  },
+  "homepage": "https://github.com/EngrVictor/HRFlow-Backend#readme"
 }

@@ -2,7 +2,7 @@ import mongoose from "mongoose"
 
 const employeeSchema = new mongoose.Schema({
     user: {
-        type: moongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
         unique: true,
@@ -16,10 +16,10 @@ const employeeSchema = new mongoose.Schema({
     workForceType: {
         type: String,
         enum: [
-            'Full-Time', 
-            'Part-Time',
-            'contract', 
-            'Intern'],
+            "Full-Time", 
+            "Part-Time",
+            "contract", 
+            "Intern"],
         required: true,
     },
     firstName: {
@@ -58,28 +58,29 @@ const employeeSchema = new mongoose.Schema({
     positionLevel: {
         type: String,
         enum: [
-             'junior-level',
-             'Mid-Level',
-             'Senior-Level',
-             'Lead',
-             'Manager',
-             'Director',
-             'Executive',
-             'intern'
+             "junior-level",
+             "Mid-Level",
+             "Senior-Level",
+             "Lead",
+             "Manager",
+             "Director",
+             "Executive",
+             "intern"
             ],
     },
     employmentStatus: {
         type: String,
         enum: [
-            'Active',
-            'On Leave', 
-            'Resigned', 
-            'Suspended', 
-            'Terminated', 
-            'Retired', 
-            'Probation'
+            "employed",
+            "On Leave", 
+            "Resigned", 
+            "Suspended", 
+            "Terminated", 
+            "Retired", 
+            "Probation"
         ],
-        default: 'Active',
+        default: "employed",
+        required: true,
     },
     salary: {
         type: Number,
@@ -136,9 +137,8 @@ const employeeSchema = new mongoose.Schema({
         timestamps: true,
     });
 // Pre-save hook to set fullName before saving
-    employeeSchema.pre('save', function(next) {
+    employeeSchema.pre('save', function() {
         this.fullName = `${this.firstName} ${this.lastName}`;
-        next();
     });
 // Create a text index on relevant fields for efficient searching
     employeeSchema.index({ 
