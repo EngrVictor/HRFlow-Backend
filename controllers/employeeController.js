@@ -1,12 +1,27 @@
 import employeeModel from "../models/Employee.js";
+import cloudinary from "../config/cloudinary.js";
 
 //CREATE EMPLOYEE
 
 export const createEmployee = async (req, res) => {
   try {
-    const employee = await employeeModel.create(req.body);
-
-    return res.status(201).json({
+    let documentation = [];
+    if (req.files && req.files.length > 0) {
+      const result = await cloudinary.uploader.upload(req.files[0].path,
+        {
+          folder: "employee-documents", 
+        }
+      ); 
+      documentation.push({
+      document_name: req.files[0].originalname,
+      file_url: result.secure_url,
+      document_type: req.body.document_type || "Other"
+      });
+    }
+    const employee = await employeeModel.create({ ...req.body,
+       documentation
+    });
+     return res.status(201).json({
       success: true,
       message: "Employee created successfully",
       data: employee,
@@ -23,7 +38,7 @@ export const createEmployee = async (req, res) => {
 
 export const getAllEmployees = async (req, res) => {
   try {
-    const employees = await employeeModel.find().populate("manager");
+    const employees = await employeeModel.find();
 
     return res.status(200).json({
       success: true,
@@ -42,7 +57,7 @@ export const getAllEmployees = async (req, res) => {
 
 export const getEmployeeById = async (req, res) => {
   try {
-    const employee = await employeeModel.findById(req.params.id).populate("manager");
+    const employee = await employeeModel.findById(req.params.id);
     if (!employee) {
       return res.status(404).json({
         success: false,

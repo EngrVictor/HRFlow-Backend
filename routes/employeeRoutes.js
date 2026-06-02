@@ -1,4 +1,5 @@
 import express from "express";
+import upload from "../middleware/upload.js";
 import {
   createEmployee,
   getAllEmployees,
@@ -8,6 +9,12 @@ import {
 } from "../controllers/employeeController.js";
 
 const router = express.Router();
+
+router.post(
+  "/create",
+   upload.array("document", 10),
+    createEmployee
+  );
 
 router.post("/create-employee", createEmployee);
 router.get("/employees", getAllEmployees);

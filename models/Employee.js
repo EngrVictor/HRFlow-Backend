@@ -1,27 +1,7 @@
 import mongoose from "mongoose"
 
 const employeeSchema = new mongoose.Schema({
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true,
-        unique: true,
-    },
-    employeeId: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true,
-    },
-    workForceType: {
-        type: String,
-        enum: [
-            "Full-Time", 
-            "Part-Time",
-            "contract", 
-            "Intern"],
-        required: true,
-    },
+
     firstName: {
         type: String,
         required: true,
@@ -47,6 +27,21 @@ const employeeSchema = new mongoose.Schema({
         type: String,
         trim: true,
     },
+        employeeId: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
+    },
+    workForceType: {
+        type: String,
+        enum: [
+            "Full-Time", 
+            "Part-Time",
+            "contract", 
+            "Intern"],
+        required: true,
+    },
     department: {
         type: String,
         required: true,
@@ -68,6 +63,53 @@ const employeeSchema = new mongoose.Schema({
              "intern"
             ],
     },
+    documentation: [
+        {
+            documentName: {
+                type: String,
+                required: true
+            },
+            documentType: {
+                type: String,
+                enum: [
+                    "Resume",
+                    "Certificates",
+                    "Signed Contract",
+                    "Cover Letter",
+                    "Government ID",
+                    "Offer Letter",
+                    "Passport",
+                    "Other"
+                ]
+            },
+            fileUrl: {
+                type: String,
+                default: null
+            },
+                uploadedAt: {
+                type: Date,
+                default: Date.now
+           }
+        }
+    ],
+    certifications: [
+        {
+            certificationName: {
+                type: String,
+                required: true
+            },
+            institution: {
+                type: String,
+            },
+            yearAwarded: {
+                type: Number,
+        },
+            certificateFile: {
+                type: String,
+                default: null
+            }
+        }
+    ],
     employmentStatus: {
         type: String,
         enum: [
@@ -94,10 +136,12 @@ const employeeSchema = new mongoose.Schema({
     manager: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Employee',
+        default: null
     },
     hrManager: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
+        default: null 
     },
     intenship: {
         school: String,
@@ -127,10 +171,12 @@ const employeeSchema = new mongoose.Schema({
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
+        default: null 
         },
     updatedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
+        default: null 
         },
 
     }, {
@@ -152,5 +198,5 @@ const employeeSchema = new mongoose.Schema({
     });
 
 
-const employeeModel = mongoose.model('employee', employeeSchema);
+const employeeModel = mongoose.model('Employee', employeeSchema);
 export default employeeModel
