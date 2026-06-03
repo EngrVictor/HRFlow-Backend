@@ -10,4 +10,9 @@ const connectDB = async () => {
     }
 }
 
-export default connectDB;
+        const mongoUri = process.env.MONGODB_URI || process.env.MONGODB_URL;
+        if (!mongoUri) {
+            throw new Error("Missing MongoDB URI. Set MONGODB_URI or MONGODB_URL in your environment.");
+        }
+        await mongoose.connect(mongoUri);
+        console.log("MongoDB connected successfully")*/
