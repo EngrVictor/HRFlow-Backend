@@ -1,28 +1,40 @@
 import express from "express";
-
 import {
-  createNotificationController,
-  getUserNotificationsController,
-  markNotificationAsReadController,
-  markAllNotificationsAsReadController,
-  deleteNotificationController,
+  createNotification,
+  markOneAsRead,
+  markOneAsUnread,
+  getUserNotifications,
+  markAllAsRead,
+  markAllAsUnread,
+  InterviewScheduled,
+  LeaveApproved,
+  LeaveRejected,
+  PerformanceReviewSubmitted,
+  deleteNotification,
 } from "../controllers/notificationController.js";
 
 const router = express.Router();
 
-// Create notification
-router.post("/", createNotificationController);
+router.post("/create-notification", createNotification);
 
-// Get all notifications for a user
-router.get("/:userId", getUserNotificationsController);
+router.put("/one-read/:notificationId", markOneAsRead);
 
-// Mark single notification as read
-router.patch("/:id/read", markNotificationAsReadController);
+router.put("/one-unread/:notificationId", markOneAsUnread);
 
-// Mark all notifications as read
-router.patch("/user/:userId/read-all", markAllNotificationsAsReadController);
+router.get("/all-user-notifications/:userId", getUserNotifications);
 
-// Delete notification
-router.delete("/:id", deleteNotificationController);
+router.put("/all-read/:userId", markAllAsRead);
+
+router.put("/all-unread/:userId", markAllAsUnread);
+
+router.delete("/delete-notification/:notificationId", deleteNotification);
+
+router.post("/interview-scheduled", InterviewScheduled);
+
+router.post("/leave-approved", LeaveApproved);
+
+router.post("/leave-rejected", LeaveRejected);
+
+router.post("/performance-review", PerformanceReviewSubmitted);
 
 export default router;
