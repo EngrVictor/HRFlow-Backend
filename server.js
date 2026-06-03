@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import analyticsRoutes from "./routes/analyticsRoutes.js";
+import router from "./routes/notificationRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -18,6 +19,14 @@ app.get("/", (req, res) => {
   res.send("Welcome to the HRFlow backend!");
 });
 
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    message: "HRFlow Africa Backend Engine is operating completely functional.",
+  });
+});
+
+app.use("/api/notifications", router);
+
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  console.log("Server successfully deployed on: http://localhost: " + port);
 });
