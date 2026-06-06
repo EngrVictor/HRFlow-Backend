@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import analyticsRoutes from "./routes/analyticsRoutes.js";
 import router from "./routes/notificationRoutes.js";
+import performanceReviewRoutes from "./routes/performanceReviewRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -26,6 +27,7 @@ app.get("/health", (req, res) => {
 });
 
 app.use("/api/notifications", router);
+app.use("/api/performance-reviews", performanceReviewRoutes);
 
 app.listen(port, () => {
   console.log("Server successfully deployed on: http://localhost: " + port);
