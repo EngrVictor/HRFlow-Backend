@@ -3,7 +3,7 @@ import Role from '../models/Role.js';
 import Permission from '../models/Permission.js';
 
 // Helper: load user's roles and permissions (cached on req to avoid multiple DB calls)
-const loadUserPermissions = async (userId) => {
+export const loadUserPermissions = async (userId) => {
   // Populate roles and their permissions
   const userWithRoles = await User.findById(userId)
     .populate({
@@ -31,7 +31,7 @@ const loadUserPermissions = async (userId) => {
 }
 
 // Middleware to check if user has at least one of the required roles
-const requireRoles = (...allowedRoles) => {
+export const requireRoles = (...allowedRoles) => {
   return async (req, res, next) => {
     if (!req.user) return res.status(401).json({ error: 'Authentication required' });
 
@@ -51,7 +51,7 @@ const requireRoles = (...allowedRoles) => {
 
 // Middleware to check if user has a specific permission (resource:action)
 // Example: requirePermission('leave_requests', 'approve')
-const requirePermission = (resource, action) => {
+export const requirePermission = (resource, action) => {
   return async (req, res, next) => {
     if (!req.user) return res.status(401).json({ error: 'Authentication required' });
 
@@ -67,5 +67,3 @@ const requirePermission = (resource, action) => {
     return res.status(403).json({ error: `Forbidden: missing permission ${required}` });
   };
 }
-
-module.exports = { requireRoles, requirePermission };

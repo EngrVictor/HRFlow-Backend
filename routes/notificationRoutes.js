@@ -1,9 +1,10 @@
 import express from "express";
+import authMiddleware from "../middleware/auth.js";
 import {
-  createNotification,
   markOneAsRead,
   markOneAsUnread,
   getUserNotifications,
+  getUnreadCount,
   markAllAsRead,
   markAllAsUnread,
   InterviewScheduled,
@@ -15,17 +16,20 @@ import {
 
 const router = express.Router();
 
-router.post("/create-notification", createNotification);
+// All notification routes require authentication
+router.use(authMiddleware);
 
-router.put("/one-read/:notificationId", markOneAsRead);
+router.patch("/one-read/:notificationId", markOneAsRead);
 
-router.put("/one-unread/:notificationId", markOneAsUnread);
+router.patch("/one-unread/:notificationId", markOneAsUnread);
+
+router.get("/all-unreadcount/:userId", getUnreadCount);
 
 router.get("/all-user-notifications/:userId", getUserNotifications);
 
-router.put("/all-read/:userId", markAllAsRead);
+router.patch("/all-read/:userId", markAllAsRead);
 
-router.put("/all-unread/:userId", markAllAsUnread);
+router.patch("/all-unread/:userId", markAllAsUnread);
 
 router.delete("/delete-notification/:notificationId", deleteNotification);
 

@@ -1,12 +1,16 @@
 import mongoose from 'mongoose';
 import Role from '../models/Role.js';
+import dotenv from 'dotenv';
 import Permission from '../models/Permission.js';
 
+dotenv.config();
+
 const seedRBAC = async () => {
-  await mongoose.connect('mongodb://localhost:27017/hr_system');
+  await mongoose.connect(process.env.MONGODB_URI);
 
   // Define all permissions
   const permissionsData = [
+    { resource: 'employee_profile', action: 'create' },
     { resource: 'employee_profile', action: 'read' },
     { resource: 'employee_profile', action: 'update' },
     { resource: 'employee_profile', action: 'delete' },
@@ -37,6 +41,7 @@ const seedRBAC = async () => {
     { name: 'admin', permissions: Object.values(permissions) }, // all permissions
     { name: 'hr_manager', permissions: [
       permissions['employee_profile:read'],
+      permissions['employee_profile:create'],
       permissions['employee_profile:update'],
       permissions['leave_requests:read'],
       permissions['leave_requests:approve'],
@@ -49,6 +54,7 @@ const seedRBAC = async () => {
     ]},
     { name: 'manager', permissions: [
       permissions['employee_profile:read'],
+      permissions['employee_profile:create'],
       permissions['leave_requests:read'],
       permissions['leave_requests:approve'],
       permissions['performance_reviews:read'],

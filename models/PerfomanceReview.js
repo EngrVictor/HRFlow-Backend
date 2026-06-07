@@ -9,7 +9,7 @@ const performanceReviewSchema = new mongoose.Schema(
     },
     reviewer: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Employee",
       required: true,
     },
     reviewPeriod: {

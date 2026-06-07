@@ -12,11 +12,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    role: {
-        type: String,
-        enum: ["admin", "hr-manager", "manager", "employee"],
-        required: true
-    },
     isActive: {
         type: Boolean,
         default: true
@@ -24,10 +19,34 @@ const userSchema = new mongoose.Schema({
     lastLogin: {
         type: Date
     },
+    googleId: { 
+        type: String, 
+        sparse: true, 
+        index: true 
+    },
+    appleId: { 
+        type: String, 
+        sparse: true, 
+        index: true 
+    },
+    authProviders: {
+        email: { type: Boolean, default: false },
+        google: { type: Boolean, default: false },
+        apple: { type: Boolean, default: false }
+    },
+    profile: {
+        firstName: String,
+        lastName: String,
+        avatar: String
+    },
     roles: [{ 
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Role'
-    }]
+    }],
+    mustChangePassword: {
+        type: Boolean,
+        default: false
+    }
 }, {timestamps: true})
 
 const userModel = mongoose.model('User', userSchema);
