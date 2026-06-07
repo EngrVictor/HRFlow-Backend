@@ -1,39 +1,6 @@
 import Notification from "../models/Notification.js";
 import sendEmail from "../services/emailServices.js";
 
-// CREATE notification
-export const createNotification = async (req, res) => {
-  try {
-    const { userId, title, message, type } = req.body;
-
-    if (!userId || !title || !message || !type) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Missing required fields. Please provide userId, title, message, and type.",
-      });
-    }
-
-    const notification = await Notification.create({
-      userId,
-      title,
-      message,
-      type,
-    });
-
-    res.status(201).json({
-      success: true,
-      message: "Notification created successfully",
-      data: notification,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
 // Mark ONE notification as READ
 export const markOneAsRead = async (req, res) => {
   try {
@@ -110,6 +77,19 @@ export const getUserNotifications = async (req, res) => {
     });
   }
 };
+
+export const getUnreadCount = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const count = await Notification.countDocuments({
+      user: userId,
+      isRead: false
+    });
+    res.json({ unreadCount: count });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to get unread count' });
+  }
+}
 
 // Mark ALL notifications as READ
 export const markAllAsRead = async (req, res) => {

@@ -1,7 +1,7 @@
 import { verifyToken } from '../utils/jwt.js'
 import User from '../models/User.js'
 
-export const authMiddleware = async (req, res, next) => {
+const authMiddleware = async (req, res, next) => {
   try {
     // Get token from Authorization header: "Bearer <token>"
     const authHeader = req.headers.authorization;
@@ -35,3 +35,5 @@ export const authMiddleware = async (req, res, next) => {
     return res.status(500).json({ error: 'Internal server error' });
   }
 }
+
+export default authMiddleware;
