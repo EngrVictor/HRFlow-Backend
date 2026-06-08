@@ -145,6 +145,8 @@ All routes require authentication **and** roles `hr_manager` or `admin`.
   "password": "Admin123!"
 }
 
+---
+
 ## Common Error Codes
 
 | HTTP Status | Error Message | Description |
@@ -155,3 +157,5 @@ All routes require authentication **and** roles `hr_manager` or `admin`.
 | 404 | Not found | Resource does not exist |
 | 409 | Duplicate entry | Email or employee code already exists |
 | 500 | Internal server error | Something went wrong on the server |
+
+---
