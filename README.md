@@ -145,7 +145,7 @@ All routes require authentication **and** roles `hr_manager` or `admin`.
   "password": "Admin123!"
 }
 
----
+```
 
 ## Common Error Codes
 
