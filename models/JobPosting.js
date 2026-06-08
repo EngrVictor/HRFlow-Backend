@@ -9,6 +9,11 @@ const jobPostingSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    department: {
+        type: String,
+        required: true
+    },
+    openings: Number,
     jobType: {
         type: String,
         enum: ['remote', 'full_time', 'part_time']

@@ -1,4 +1,6 @@
 import express from 'express';
+import authMiddleware from '../middleware/auth.js';
+import { requirePermission, requireRoles } from '../middleware/rbac.js';
 const router = express.Router();
 
 import {
@@ -8,25 +10,28 @@ import {
     updateLeaveRequestStatus,
     deleteLeaveRequest,
     getLeaveBalance
-} from '../controllers/leave-request.js';
+} from '../controllers/leaveController.js';
+
+// All leave request routes require authentication
+router.use(authMiddleware);
 
 
 // Create a new leave request
-router.post('/leave-requests', createLeaveRequest);
+router.post('/', requirePermission('leave_requests', 'create'), createLeaveRequest);
 
 // Get all leave requests
-router.get('/leave-requests', getAllLeaveRequests);
+router.get('/', requireRoles('admin', 'hr_manager', 'manager'), getAllLeaveRequests);
 
 // Get leave requests for a specific employee
-router.get('/leave-requests/employee/:employeeId', getEmployeeLeaveRequests);
+router.get('/employee', getEmployeeLeaveRequests);
 
 // Get employee leave balance
-router.get('/leave-balance/:employeeId', getLeaveBalance);
+router.get('/leave-balance', getLeaveBalance);
 
 // Approve or reject leave request
-router.put('/leave-requests/:id/status', updateLeaveRequestStatus);
+router.patch('/update-request/:id', requirePermission('leave_requests', 'approve'), updateLeaveRequestStatus);
 
 // Delete leave request
-router.delete('/leave-requests/:id', deleteLeaveRequest);
+router.delete('/delete-request/:id', deleteLeaveRequest);
 
 export default router;

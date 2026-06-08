@@ -1,7 +1,12 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
 
 const employeeSchema = new mongoose.Schema({
-
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+        unique: true
+    },
     firstName: {
         type: String,
         required: true,
@@ -12,35 +17,18 @@ const employeeSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
-    fullName: {
-        type: String,
-        trim: true,
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true,
-        lowercase: true,
-    },
     PhoneNumber: {
         type: String,
         trim: true,
     },
-        employeeId: {
+    position: {
+        type: String,
+    },
+    employeeCode: {
         type: String,
         required: true,
         unique: true,
         trim: true,
-    },
-    workForceType: {
-        type: String,
-        enum: [
-            "Full-Time", 
-            "Part-Time",
-            "contract", 
-            "Intern"],
-        required: true,
     },
     department: {
         type: String,
@@ -48,20 +36,10 @@ const employeeSchema = new mongoose.Schema({
     },
     jobTitle: {
         type: String,
-        required: true,
     },
-    positionLevel: {
-        type: String,
-        enum: [
-             "junior-level",
-             "Mid-Level",
-             "Senior-Level",
-             "Lead",
-             "Manager",
-             "Director",
-             "Executive",
-             "intern"
-            ],
+    leaveBalance: {
+        type: Number,
+        default: 20, // Default leave balance
     },
     documentation: [
         {
@@ -110,19 +88,10 @@ const employeeSchema = new mongoose.Schema({
             }
         }
     ],
-    employmentStatus: {
-        type: String,
-        enum: [
-            "employed",
-            "On Leave", 
-            "Resigned", 
-            "Suspended", 
-            "Terminated", 
-            "Retired", 
-            "Probation"
-        ],
-        default: "employed",
-        required: true,
+    status: {   
+      type: String,
+      enum: ["active", "inactive", "suspended"],
+      default: "active",
     },
     salary: {
         type: Number,
@@ -138,23 +107,6 @@ const employeeSchema = new mongoose.Schema({
         ref: 'Employee',
         default: null
     },
-    hrManager: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        default: null 
-    },
-    intenship: {
-        school: String,
-        course: String,
-        graduationDate: Date,
-        internshipStartDate: Date,
-        internshipEndDate: Date,
-        stipend: Number,
-        eligibleForFullTime:{ 
-            type: Boolean, 
-            default: false },
-
-    },
     address: {
         street: String,
         city: String,
@@ -168,30 +120,16 @@ const employeeSchema = new mongoose.Schema({
         relationship: String,
         phone: String,
     },
-    createdBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        default: null 
-        },
-    updatedBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        default: null 
-        },
 
     }, {
         timestamps: true,
     });
-// Pre-save hook to set fullName before saving
-    employeeSchema.pre('save', function() {
-        this.fullName = `${this.firstName} ${this.lastName}`;
-    });
+
 // Create a text index on relevant fields for efficient searching
     employeeSchema.index({ 
-        employeeId: 'text',
+        employeeCode: 'text',
         firstName: 'text',
         lastName: 'text',
-        email: 'text',
         department: 'text',
         jobTitle: 'text',
         positionLevel: 'text',

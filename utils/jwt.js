@@ -1,10 +1,12 @@
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRY = '1d';
 
 // Generate token for a user
-function generateToken(userId, email) {
+export const generateToken = (userId, email) => {
   return jwt.sign(
     { sub: userId, email },
     JWT_SECRET,
@@ -13,8 +15,7 @@ function generateToken(userId, email) {
 }
 
 // Verify token (returns decoded payload or throws error)
-function verifyToken(token) {
+export const verifyToken = (token) => {
   return jwt.verify(token, JWT_SECRET);
 }
 
-module.exports = { generateToken, verifyToken };
