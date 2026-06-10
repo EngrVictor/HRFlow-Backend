@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import User from '../models/User.js';
+import userModel from '../models/User.js';
 import { generateToken } from '../utils/jwt.js';
 import AuditLog from '../models/AuditLog.js';
 import { notifyUser, notifyManyUsers } from '../services/notificationService.js';
@@ -15,7 +15,7 @@ export const login = async (req, res) => {
       return res.status(400).json({ error: 'Email and password required' });
     }
 
-    const user = await User.findOne({ email });
+    const user = await userModel.findOne({ email });
     if (!user) return res.status(401).json({ error: 'Invalid credentials' });
 
     const mustChangePassword = user.mustChangePassword || false;
@@ -57,7 +57,7 @@ export const login = async (req, res) => {
 export const setPassword = async (req, res) => {
   const { email, oldPassword, newPassword, token } = req.body; // token from password reset or email verification
   // Verify token (simplified)
-  const user = await User.findOne({ email });
+  const user = await userModel.findOne({ email });
   if (!user) return res.status(404).json({ error: 'User not found' });
 
   if (user.mustChangePassword === false) {
@@ -110,7 +110,7 @@ export const linkProvider = async (req, res) => {
   const currentUser = req.user; // from authMiddleware
 
   // Check if this providerId is already linked to another user
-  const existing = await User.findOne({ [`${provider}Id`]: providerId });
+  const existing = await userModel.findOne({ [`${provider}Id`]: providerId });
   if (existing && existing._id.toString() !== currentUser._id.toString()) {
     return res.status(409).json({ error: `This ${provider} account is already linked to another user` });
   }
