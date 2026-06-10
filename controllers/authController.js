@@ -34,6 +34,8 @@ export const login = async (req, res) => {
 
     const token = generateToken(user._id, user.email);
 
+    res.json({ token, userId: user._id });
+
     const employee = await employeeModel.findOne({ user: user._id });
 
     await AuditLog.create({
@@ -47,10 +49,9 @@ export const login = async (req, res) => {
       newData: { email }
     });
 
-    return res.json({ token, userId: user._id });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ error: 'Login failed', Error: err.message });
+    res.status(500).json({ error: 'Login failed', Error: err.message });
   }
 };
 
