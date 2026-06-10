@@ -34,9 +34,10 @@ export const login = async (req, res) => {
 
     const token = generateToken(user._id, user.email);
 
-    res.json({ token, userId: user._id });
-
-    const employee = await employeeModel.findOne({ user: user._id });
+    const employee = await Employee.findOne({ user: user._id });
+    if (!employee) {
+      return res.status(403).json({ error: 'No employee profile linked' });
+    }
 
     await AuditLog.create({
       user: user._id,
@@ -48,10 +49,11 @@ export const login = async (req, res) => {
       entityId: user._id,
       newData: { email }
     });
-
+    
+    return res.json({ token, userId: user._id });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Login failed', Error: err.message });
+    return res.status(500).json({ error: 'Login failed', Error: err.message });
   }
 };
 
