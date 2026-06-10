@@ -56,7 +56,7 @@ export const createEmployee = async (req, res) => {
       manager: managerId || null,
       hireDate: hireDate || new Date(),
       salary: salary || null,
-      leaveBalanceDays: leaveBalanceDays || 20,
+      leaveBalance: leaveBalance || 20,
       documentation,
       employeeCode: employeeCode,
       ...others
