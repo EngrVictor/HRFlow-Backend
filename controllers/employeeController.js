@@ -38,7 +38,7 @@ export const createEmployee = async (req, res) => {
       });
     }
 
-    const { email, role, firstName, lastName, department, position, managerId, hireDate, salary, leaveBalanceDays } = req.body;
+    const { email, role, firstName, lastName, department, position, managerId, hireDate, salary, leaveBalance, ...others } = req.body;
     const userId = req.user._id;
 
     const employeeCode = await generateEmployeeCode();
@@ -59,6 +59,7 @@ export const createEmployee = async (req, res) => {
       leaveBalanceDays: leaveBalanceDays || 20,
       documentation,
       employeeCode: employeeCode,
+      ...others
     });
 
     const creatorEmployee = await employeeModel.findOne({ user: userId });
