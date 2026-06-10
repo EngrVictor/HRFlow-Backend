@@ -34,7 +34,7 @@ export const login = async (req, res) => {
 
     const token = generateToken(user._id, user.email);
 
-    const employee = await Employee.findOne({ user: user._id });
+    const employee = await employeeModel.findOne({ user: user._id });
     if (!employee) {
       return res.status(403).json({ error: 'No employee profile linked' });
     }
