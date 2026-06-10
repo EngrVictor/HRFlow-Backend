@@ -1,5 +1,6 @@
 import Notification from "../models/Notification.js";
-import Employee from "../models/Employee.js";
+import employeeModel from "../models/Employee.js";
+import userModel from "../models/User.js";   
 import sendEmail from "./emailServices.js";
 
 export const notifyUser = async (userId, type, category, title, message, options = {}) => {
@@ -17,7 +18,8 @@ export const notifyUser = async (userId, type, category, title, message, options
 
   // Here you could trigger email sending (asynchronously) if type === 'email'
   if (type === 'email') {
-    const user = await User.findById(userId).select('email');
+    const user = await userModel.findById(userId).select('email');
+    console.log(user);
     await sendEmail(user.email, title, `<p>${message}</p>`);
   }
 
@@ -40,7 +42,7 @@ export const notifyManyUsers = async (userIds, type, category, title, message, o
 }
 
 export const getManagerUserId = async (employeeId) => {
-  const employee = await Employee.findById(employeeId).populate('manager');
+  const employee = await employeeModel.findById(employeeId).populate('manager');
   if (employee && employee.manager && employee.manager._id) {
     console.log(employee.manager);
 

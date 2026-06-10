@@ -39,6 +39,7 @@ export const createEmployee = async (req, res) => {
     }
 
     const { email, role, firstName, lastName, department, position, managerId, hireDate, salary, leaveBalanceDays } = req.body;
+    const userId = req.user._id;
 
     const employeeCode = await generateEmployeeCode();
     const tempPassword = generateRandomPassword();
@@ -60,7 +61,7 @@ export const createEmployee = async (req, res) => {
       employeeCode: employeeCode,
     });
 
-    const creatorEmployee = await employeeModel.findOne({ user: req.user._id });
+    const creatorEmployee = await employeeModel.findOne({ user: userId });
 
     await notifyUser(
       employee.manager,
@@ -76,13 +77,13 @@ export const createEmployee = async (req, res) => {
     );
 
     await AuditLog.create({
-      user: user._id,
+      user: userId,
       action: 'CREATE_EMPLOYEE',
       entityType: 'Employee',
       userAgent: req.headers['user-agent'],
       ipAddress: req.ip,
       performedBy: creatorEmployee._id,
-      entityId: user._id,
+      entityId: employee._id,
       newData: { email, firstName, lastName, department, position }
     });
 

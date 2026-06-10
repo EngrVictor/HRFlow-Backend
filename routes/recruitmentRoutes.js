@@ -32,3 +32,9 @@ router.put('/update-job/:id', requireRoles('admin', 'hr_manager',), updateJob);
 router.delete('/delete-job/:id', requireRoles('admin', 'hr_manager',), deleteJob);
 
 export default router;
+
+// Role identifiers:
+// - admin - 6a25c8ae163827759f1fe8fb
+// - hr_manager - 6a25c8ae163827759f1fe8fc
+// - manager - 6a25c8ae163827759f1fe8fd
+// - employee - 6a25c8ae163827759f1fe8fe

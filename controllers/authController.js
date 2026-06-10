@@ -33,7 +33,6 @@ export const login = async (req, res) => {
     await user.save();
 
     const token = generateToken(user._id, user.email);
-    res.json({ token, userId: user._id });
 
     const employee = await employeeModel.findOne({ user: user._id });
 
@@ -48,9 +47,10 @@ export const login = async (req, res) => {
       newData: { email }
     });
 
+    return res.json({ token, userId: user._id });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Login failed', Error: err.message });
+    return res.status(500).json({ error: 'Login failed', Error: err.message });
   }
 };
 
